@@ -1,0 +1,24 @@
+name: Build manylinux wheel
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build_wheels:
+    name: Build wheel for cp310 manylinux_x86_64
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.23.0
+        env:
+          CIBW_BUILD: "cp310-manylinux_x86_64"
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+          CIBW_BEFORE_BUILD: "pip install numpy"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vamp-wheel
+          path: ./wheelhouse/*.whl
